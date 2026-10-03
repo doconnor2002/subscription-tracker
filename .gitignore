@@ -1,0 +1,59 @@
+# Build output
+[Bb]in/
+[Oo]bj/
+out/
+
+# User-specific files
+*.user
+*.rsuser
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Rider / ReSharper
+_ReSharper*/
+*.DotSettings.user
+
+# Visual Studio / VS Code caches
+.vs/
+.vscode/.history/
+
+# NuGet
+*.nupkg
+*.snupkg
+packages/
+!**/packages/build/
+!**/packages/repositories.config
+
+# Test, coverage, and logs
+TestResults/
+*.trx
+*.coverage
+*.coveragexml
+coverage/
+*.log
+
+# .NET generated files
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# Local app settings and secrets
+appsettings.Local.json
+appsettings.*.local.json
+secrets.json
+
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Temporary files
+*.tmp
+*.temp
+*.cache
+*.pid
+*.seed
+*.swp
+*.swo
+~$*

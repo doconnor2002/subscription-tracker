@@ -57,3 +57,5 @@ Desktop.ini
 *.swp
 *.swo
 ~$*
+# Local environment variables
+.env

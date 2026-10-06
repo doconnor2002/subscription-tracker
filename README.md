@@ -2,7 +2,7 @@
 
 SubTrack is a subscription-tracking Web API built with ASP.NET Core, .NET 10, and PostgreSQL. It uses a layered architecture to separate the API, application logic, domain model, and infrastructure.
 
-The current API supports creating subscriptions. Authentication, user management, subscription listing and updates, renewal processing, and notifications are not implemented yet.
+The current API supports creating subscriptions and retrieving a subscription by ID. Authentication, user management, subscription collection listing and updates, renewal processing, and notifications are not implemented yet.
 
 ## Tech stack
 
@@ -105,6 +105,20 @@ Example request:
 ```
 
 `billingFrequency` is a numeric enum: `1` for monthly, `2` for quarterly, and `3` for yearly. A successful request returns `201 Created` with the created subscription, including its generated `id`, active status, and creation timestamp.
+
+The response includes a `Location` header pointing to the created subscription's `GET /api/subscriptions/{id}` endpoint.
+
+### Get a subscription by ID
+
+`GET /api/subscriptions/{id}`
+
+For example:
+
+```http
+GET /api/subscriptions/1
+```
+
+Returns `200 OK` with the subscription when it exists, or `404 Not Found` when no subscription has that ID.
 
 Authentication and user management are not implemented. The request currently supplies `userId` directly; the API does not authenticate or verify that user.
 

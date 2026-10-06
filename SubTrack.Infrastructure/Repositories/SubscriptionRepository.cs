@@ -30,6 +30,8 @@ public class SubscriptionRepository : ISubscriptionRepository
 
     public async Task<IEnumerable<Subscription>> GetAllSubscriptionsAsync()
     {
-        return await _dbContext.Subscriptions.ToListAsync();
+        return await _dbContext.Subscriptions
+            .AsNoTracking()
+            .ToListAsync();
     }
 }

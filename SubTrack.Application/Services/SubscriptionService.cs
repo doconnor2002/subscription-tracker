@@ -65,9 +65,10 @@ public class SubscriptionService : ISubscriptionService
     }
 
     public async Task<IEnumerable<CreateSubscriptionResponse>> GetAllSubscriptionsAsync(
-        long? userId)
+        long? userId,
+        bool? isActive)
     {
-        var subscriptions = await _repository.GetAllSubscriptionsAsync(userId);
+        var subscriptions = await _repository.GetAllSubscriptionsAsync(userId, isActive);
 
         return subscriptions.Select(subscription => new CreateSubscriptionResponse
         {

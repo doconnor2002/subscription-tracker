@@ -10,5 +10,6 @@ public interface ISubscriptionService
     Task<CreateSubscriptionResponse?> GetSubscriptionByIdAsync(long id);
 
     Task<IEnumerable<CreateSubscriptionResponse>> GetAllSubscriptionsAsync(
-        long? userId);
+        long? userId,
+        bool? isActive);
 }

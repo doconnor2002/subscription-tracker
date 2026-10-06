@@ -21,6 +21,22 @@ public class SubscriptionsController : ControllerBase
     {
         var response = await _subscriptionService.CreateSubscriptionAsync(request);
 
-        return StatusCode(StatusCodes.Status201Created, response);
+        return CreatedAtAction(
+            nameof(GetSubscriptionById),
+            new { id = response.Id },
+            response);
+    }
+
+    [HttpGet("{id:long}")]
+    public async Task<ActionResult<CreateSubscriptionResponse>> GetSubscriptionById(long id)
+    {
+        var response = await _subscriptionService.GetSubscriptionByIdAsync(id);
+
+        if (response is null)
+        {
+            return NotFound();
+        }
+
+        return Ok(response);
     }
 }

@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using SubTrack.Application.Interfaces;
 using SubTrack.Domain.Entities;
 using SubTrack.Infrastructure.Data;
@@ -13,13 +14,17 @@ public class SubscriptionRepository : ISubscriptionRepository
         _dbContext = dbContext;
     }
 
-    public async Task<Subscription> CreateSubscriptionAsync(
-        Subscription subscription)
+    public async Task<Subscription> CreateSubscriptionAsync(Subscription subscription)
     {
         _dbContext.Subscriptions.Add(subscription);
-
         await _dbContext.SaveChangesAsync();
 
         return subscription;
+    }
+
+    public async Task<Subscription?> GetSubscriptionByIdAsync(long id)
+    {
+        return await _dbContext.Subscriptions
+            .FirstOrDefaultAsync(subscription => subscription.Id == id);
     }
 }

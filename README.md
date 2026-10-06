@@ -1,147 +1,131 @@
 # SubTrack
 
-SubTrack is a subscription tracking application built with ASP.NET Core and PostgreSQL. The project is being developed with a layered architecture designed to support future features such as authentication, subscription management, automated renewal processing, and notifications.
+SubTrack is a subscription-tracking Web API built with ASP.NET Core, .NET 10, and PostgreSQL. It uses a layered architecture to separate the API, application logic, domain model, and infrastructure.
 
-## Tech Stack
+The current API supports creating subscriptions. Authentication, user management, subscription listing and updates, renewal processing, and notifications are not implemented yet.
 
-* C#
-* ASP.NET Core Web API
-* .NET 10
-* Entity Framework Core
-* PostgreSQL
-* Docker / Docker Compose
-* React + TypeScript (planned)
-* Azure services (planned)
+## Tech stack
 
-## Project Structure
+- C#
+- ASP.NET Core Web API on .NET 10
+- Entity Framework Core 10
+- PostgreSQL
+- Docker Compose
 
-```text
-SubTrack/
-├── SubTrack.Api/              # HTTP API and application entry point
-├── SubTrack.Application/      # Application logic and use cases
-├── SubTrack.Domain/           # Domain entities and business rules
-├── SubTrack.Infrastructure/  # Database and external infrastructure
-├── compose.yaml               # Local PostgreSQL configuration
-└── SubTrack.sln
-```
-
-The intended dependency flow is:
+## Repository layout
 
 ```text
-API
- ↓
-Application
- ↓
-Domain
- ↑
-Infrastructure
+subscription-tracker/
+├── SubTrack.Api/             # HTTP API and application entry point
+├── SubTrack.Application/     # Application services, interfaces, and DTOs
+├── SubTrack.Domain/          # Domain entities and enums
+├── SubTrack.Infrastructure/  # PostgreSQL, EF Core, and repository implementations
+├── .env.example              # Local PostgreSQL environment template
+├── compose.yaml              # Local PostgreSQL service
+└── SubTrack.slnx             # .NET solution
 ```
 
-Infrastructure provides the implementations needed by the application, including database access through Entity Framework Core.
+The API depends on the Application layer, and Infrastructure provides the repository and database implementations used by Application.
 
-## Local Development Setup
+## Prerequisites
 
-### Prerequisites
+- .NET 10 SDK
+- Docker Desktop with Docker Compose
+- EF Core command-line tool (`dotnet-ef` 10.x) for database migrations
 
-* .NET 10 SDK
-* Docker Desktop
-* Git
-
-### 1. Clone the repository
+Install the EF Core command-line tool if needed:
 
 ```powershell
-git clone <repository-url>
-cd subscription-tracker
+dotnet tool install --global dotnet-ef --version 10.0.12
 ```
 
-### 2. Create the local environment file
+## Local development
 
-Copy the example environment file:
+Run the following commands from the repository root.
+
+### 1. Configure PostgreSQL
+
+Create a local environment file from the template:
 
 ```powershell
 Copy-Item .env.example .env
 ```
 
-The `.env` file contains the credentials used by the local PostgreSQL container and should not be committed to source control.
+The template uses `change-me` as a development-only password. Change it if desired; `.env` is ignored by Git and should not be committed.
 
-If you change the PostgreSQL password in `.env`, make sure the API connection string uses the same password.
-
-### 3. Start PostgreSQL
+Start the database:
 
 ```powershell
 docker compose up -d
-```
-
-Verify the container is running:
-
-```powershell
 docker compose ps
 ```
 
-### 4. Configure the API connection string
+Compose exposes PostgreSQL on `localhost:5432` and stores its data in a named volume.
 
-The API uses .NET User Secrets for the local database connection string.
+### 2. Configure the API connection string
 
-Initialize User Secrets if they have not already been configured:
-
-```powershell
-dotnet user-secrets init --project SubTrack.Api
-```
-
-Set the connection string using the same database credentials configured in `.env`:
+The API reads the `ConnectionStrings:SubTrack` connection string from .NET User Secrets in Development. Set its database, username, and password to match `.env`. Replace `REPLACE_WITH_POSTGRES_PASSWORD` in the command below with the value of `POSTGRES_PASSWORD` in your `.env` file:
 
 ```powershell
-dotnet user-secrets set "ConnectionStrings:SubTrack" "Host=localhost;Port=5432;Database=subtrack;Username=subtrack;Password=change-me" --project SubTrack.Api
+dotnet user-secrets set "ConnectionStrings:SubTrack" "Host=localhost;Port=5432;Database=subtrack;Username=subtrack;Password=REPLACE_WITH_POSTGRES_PASSWORD" --project SubTrack.Api
 ```
 
-If you changed the password in `.env`, replace `change-me` with the same password.
+If you changed any PostgreSQL settings in `.env`, update the connection string to match. User Secrets keeps this connection string out of source control.
 
-User Secrets keeps the API connection string out of source control.
-
-### 5. Apply database migrations
-
-From the repository root:
+### 3. Apply database migrations
 
 ```powershell
 dotnet ef database update --project SubTrack.Infrastructure --startup-project SubTrack.Api
 ```
 
-### 6. Run the API
+### 4. Run the API
 
 ```powershell
 dotnet run --project SubTrack.Api
 ```
 
-The API will start on the local development URL shown in the console.
+The HTTP development profile listens at `http://localhost:5234`. The HTTPS profile also listens at `https://localhost:7057`.
 
-## Database
+## API
 
-SubTrack uses PostgreSQL for local development. Entity Framework Core migrations are stored in:
+### Create a subscription
 
-```text
-SubTrack.Infrastructure/Migrations/
+`POST /api/subscriptions`
+
+Example request:
+
+```json
+{
+  "userId": 1,
+  "name": "Music service",
+  "price": 10.99,
+  "nextBillingDate": "2026-11-05",
+  "billingFrequency": 1
+}
 ```
 
-To create a new migration:
+`billingFrequency` is a numeric enum: `1` for monthly, `2` for quarterly, and `3` for yearly. A successful request returns `201 Created` with the created subscription, including its generated `id`, active status, and creation timestamp.
+
+Authentication and user management are not implemented. The request currently supplies `userId` directly; the API does not authenticate or verify that user.
+
+## Database migrations
+
+Migrations are in `SubTrack.Infrastructure/Migrations/`. Create a migration with:
 
 ```powershell
 dotnet ef migrations add <MigrationName> --project SubTrack.Infrastructure --startup-project SubTrack.Api
 ```
 
-To apply migrations:
+Apply migrations to the configured database with:
 
 ```powershell
 dotnet ef database update --project SubTrack.Infrastructure --startup-project SubTrack.Api
 ```
 
-## Development Workflow
+## Build
 
-Feature work is developed on separate branches and merged into `main` through pull requests.
-
-Before opening a pull request:
+Build the solution from the repository root:
 
 ```powershell
 dotnet build
 ```
-
-Changes should include appropriate tests as the project grows.

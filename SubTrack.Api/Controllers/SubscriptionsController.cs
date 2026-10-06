@@ -41,9 +41,10 @@ public class SubscriptionsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<CreateSubscriptionResponse>>> GetAllSubscriptions()
+    public async Task<ActionResult<IEnumerable<CreateSubscriptionResponse>>> GetAllSubscriptions(
+        [FromQuery] long? userId)
     {
-        var response = await _subscriptionService.GetAllSubscriptionsAsync();
+        var response = await _subscriptionService.GetAllSubscriptionsAsync(userId);
 
         return Ok(response);
     }

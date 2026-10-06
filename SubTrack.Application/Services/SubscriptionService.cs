@@ -21,9 +21,8 @@ public class SubscriptionService : ISubscriptionService
             UserId = request.UserId,
             Name = request.Name,
             Price = request.Price,
-            BillingFrequency = request.BillingFrequency,
             NextBillingDate = request.NextBillingDate,
-            IsActive = true,
+            BillingFrequency = request.BillingFrequency,
             CreatedAt = DateTime.UtcNow
         };
 
@@ -65,9 +64,10 @@ public class SubscriptionService : ISubscriptionService
         };
     }
 
-    public async Task<IEnumerable<CreateSubscriptionResponse>> GetAllSubscriptionsAsync()
+    public async Task<IEnumerable<CreateSubscriptionResponse>> GetAllSubscriptionsAsync(
+        long? userId)
     {
-        var subscriptions = await _repository.GetAllSubscriptionsAsync();
+        var subscriptions = await _repository.GetAllSubscriptionsAsync(userId);
 
         return subscriptions.Select(subscription => new CreateSubscriptionResponse
         {

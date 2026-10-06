@@ -28,8 +28,16 @@ public class SubscriptionRepository : ISubscriptionRepository
             .FirstOrDefaultAsync(subscription => subscription.Id == id);
     }
 
-    public async Task<IEnumerable<Subscription>> GetAllSubscriptionsAsync()
+    public async Task<IEnumerable<Subscription>> GetAllSubscriptionsAsync(long? userId)
     {
+        if (userId.HasValue)
+        {
+            return await _dbContext.Subscriptions
+                .AsNoTracking()
+                .Where(subscription => subscription.UserId == userId.Value)
+                .ToListAsync();
+        }
+
         return await _dbContext.Subscriptions
             .AsNoTracking()
             .ToListAsync();

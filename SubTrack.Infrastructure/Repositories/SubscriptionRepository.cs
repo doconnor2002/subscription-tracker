@@ -27,4 +27,9 @@ public class SubscriptionRepository : ISubscriptionRepository
         return await _dbContext.Subscriptions
             .FirstOrDefaultAsync(subscription => subscription.Id == id);
     }
+
+    public async Task<IEnumerable<Subscription>> GetAllSubscriptionsAsync()
+    {
+        return await _dbContext.Subscriptions.ToListAsync();
+    }
 }

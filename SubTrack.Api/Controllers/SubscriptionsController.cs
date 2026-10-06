@@ -39,4 +39,12 @@ public class SubscriptionsController : ControllerBase
 
         return Ok(response);
     }
+
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<CreateSubscriptionResponse>>> GetAllSubscriptions()
+    {
+        var response = await _subscriptionService.GetAllSubscriptionsAsync();
+
+        return Ok(response);
+    }
 }

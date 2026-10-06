@@ -64,4 +64,21 @@ public class SubscriptionService : ISubscriptionService
             CreatedAt = subscription.CreatedAt
         };
     }
+
+    public async Task<IEnumerable<CreateSubscriptionResponse>> GetAllSubscriptionsAsync()
+    {
+        var subscriptions = await _repository.GetAllSubscriptionsAsync();
+
+        return subscriptions.Select(subscription => new CreateSubscriptionResponse
+        {
+            Id = subscription.Id,
+            UserId = subscription.UserId,
+            Name = subscription.Name,
+            Price = subscription.Price,
+            NextBillingDate = subscription.NextBillingDate,
+            BillingFrequency = subscription.BillingFrequency,
+            IsActive = subscription.IsActive,
+            CreatedAt = subscription.CreatedAt
+        });
+    }
 }

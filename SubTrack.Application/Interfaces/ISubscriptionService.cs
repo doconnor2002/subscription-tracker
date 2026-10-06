@@ -7,4 +7,6 @@ public interface ISubscriptionService
     Task<CreateSubscriptionResponse> CreateSubscriptionAsync(CreateSubscriptionRequest request);
 
     Task<CreateSubscriptionResponse?> GetSubscriptionByIdAsync(long id);
+
+    Task<IEnumerable<CreateSubscriptionResponse>> GetAllSubscriptionsAsync();
 }

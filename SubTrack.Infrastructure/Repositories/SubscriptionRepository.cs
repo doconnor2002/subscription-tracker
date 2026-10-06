@@ -47,4 +47,18 @@ public class SubscriptionRepository : ISubscriptionRepository
 
         return await query.ToListAsync();
     }
+
+    public async Task<Subscription?> DeleteSubscriptionAsync(long id)
+    {
+        var subscription = await _dbContext.Subscriptions.FindAsync(id);
+        if (subscription is null)
+        {
+            return null;
+        }
+
+        _dbContext.Subscriptions.Remove(subscription);
+        await _dbContext.SaveChangesAsync();
+
+        return subscription;
+    }
 }

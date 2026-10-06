@@ -49,4 +49,17 @@ public class SubscriptionsController : ControllerBase
 
         return Ok(response);
     }
+
+    [HttpDelete("{id:long}")]
+    public async Task<IActionResult> DeleteSubscription(long id)
+    {
+        var response = await _subscriptionService.DeleteSubscriptionAsync(id);
+
+        if (response is null)
+        {
+            return NotFound();
+        }
+
+        return NoContent();
+    }
 }

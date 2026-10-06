@@ -12,4 +12,6 @@ public interface ISubscriptionService
     Task<IEnumerable<CreateSubscriptionResponse>> GetAllSubscriptionsAsync(
         long? userId,
         bool? isActive);
+
+    Task<CreateSubscriptionResponse?> DeleteSubscriptionAsync(long id);
 }

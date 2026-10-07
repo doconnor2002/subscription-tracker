@@ -37,28 +37,31 @@ public class SubscriptionRepository : ISubscriptionRepository
 
         if (userId.HasValue)
         {
-            query = query.Where(subscription => subscription.UserId == userId.Value);
+            query = query.Where(subscription =>
+                subscription.UserId == userId.Value);
         }
 
         if (isActive.HasValue)
         {
-            query = query.Where(subscription => subscription.IsActive == isActive.Value);
+            query = query.Where(subscription =>
+                subscription.IsActive == isActive.Value);
         }
 
         return await query.ToListAsync();
     }
 
-    public async Task<Subscription?> DeleteSubscriptionAsync(long id)
+    public async Task<bool> DeleteSubscriptionAsync(long id)
     {
         var subscription = await _dbContext.Subscriptions.FindAsync(id);
+
         if (subscription is null)
         {
-            return null;
+            return false;
         }
 
         _dbContext.Subscriptions.Remove(subscription);
         await _dbContext.SaveChangesAsync();
 
-        return subscription;
+        return true;
     }
 }

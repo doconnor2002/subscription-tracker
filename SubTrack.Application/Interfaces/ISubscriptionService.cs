@@ -4,14 +4,14 @@ namespace SubTrack.Application.Interfaces;
 
 public interface ISubscriptionService
 {
-    Task<CreateSubscriptionResponse> CreateSubscriptionAsync(
+    Task<SubscriptionResponse> CreateSubscriptionAsync(
         CreateSubscriptionRequest request);
 
-    Task<CreateSubscriptionResponse?> GetSubscriptionByIdAsync(long id);
+    Task<SubscriptionResponse?> GetSubscriptionByIdAsync(long id);
 
-    Task<IEnumerable<CreateSubscriptionResponse>> GetAllSubscriptionsAsync(
+    Task<IEnumerable<SubscriptionResponse>> GetAllSubscriptionsAsync(
         long? userId,
         bool? isActive);
 
-    Task<CreateSubscriptionResponse?> DeleteSubscriptionAsync(long id);
+    Task<bool> DeleteSubscriptionAsync(long id);
 }

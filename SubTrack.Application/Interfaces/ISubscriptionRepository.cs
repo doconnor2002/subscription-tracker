@@ -8,7 +8,9 @@ public interface ISubscriptionRepository
 
     Task<Subscription?> GetSubscriptionByIdAsync(long id);
 
-    Task<IEnumerable<Subscription>> GetAllSubscriptionsAsync(long? userId, bool? isActive);
+    Task<IEnumerable<Subscription>> GetAllSubscriptionsAsync(
+        long? userId,
+        bool? isActive);
 
-    Task<Subscription?> DeleteSubscriptionAsync(long id);
+    Task<bool> DeleteSubscriptionAsync(long id);
 }

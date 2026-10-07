@@ -28,10 +28,40 @@ public class SubscriptionRepository : ISubscriptionRepository
             .FirstOrDefaultAsync(subscription => subscription.Id == id);
     }
 
-    public async Task<IEnumerable<Subscription>> GetAllSubscriptionsAsync()
+    public async Task<IEnumerable<Subscription>> GetAllSubscriptionsAsync(
+        long? userId,
+        bool? isActive)
     {
-        return await _dbContext.Subscriptions
-            .AsNoTracking()
-            .ToListAsync();
+        var query = _dbContext.Subscriptions
+            .AsNoTracking();
+
+        if (userId.HasValue)
+        {
+            query = query.Where(subscription =>
+                subscription.UserId == userId.Value);
+        }
+
+        if (isActive.HasValue)
+        {
+            query = query.Where(subscription =>
+                subscription.IsActive == isActive.Value);
+        }
+
+        return await query.ToListAsync();
+    }
+
+    public async Task<bool> DeleteSubscriptionAsync(long id)
+    {
+        var subscription = await _dbContext.Subscriptions.FindAsync(id);
+
+        if (subscription is null)
+        {
+            return false;
+        }
+
+        _dbContext.Subscriptions.Remove(subscription);
+        await _dbContext.SaveChangesAsync();
+
+        return true;
     }
 }

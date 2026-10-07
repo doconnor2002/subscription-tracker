@@ -16,7 +16,7 @@ public class SubscriptionsController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<CreateSubscriptionResponse>> CreateSubscription(
+    public async Task<ActionResult<SubscriptionResponse>> CreateSubscription(
         CreateSubscriptionRequest request)
     {
         var response = await _subscriptionService.CreateSubscriptionAsync(request);
@@ -28,7 +28,7 @@ public class SubscriptionsController : ControllerBase
     }
 
     [HttpGet("{id:long}")]
-    public async Task<ActionResult<CreateSubscriptionResponse>> GetSubscriptionById(long id)
+    public async Task<ActionResult<SubscriptionResponse>> GetSubscriptionById(long id)
     {
         var response = await _subscriptionService.GetSubscriptionByIdAsync(id);
 
@@ -41,10 +41,26 @@ public class SubscriptionsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<CreateSubscriptionResponse>>> GetAllSubscriptions()
+    public async Task<ActionResult<IEnumerable<SubscriptionResponse>>> GetAllSubscriptions(
+        [FromQuery] long? userId,
+        [FromQuery] bool? isActive)
     {
-        var response = await _subscriptionService.GetAllSubscriptionsAsync();
+        var response =
+            await _subscriptionService.GetAllSubscriptionsAsync(userId, isActive);
 
         return Ok(response);
+    }
+
+    [HttpDelete("{id:long}")]
+    public async Task<IActionResult> DeleteSubscription(long id)
+    {
+        var deleted = await _subscriptionService.DeleteSubscriptionAsync(id);
+
+        if (!deleted)
+        {
+            return NotFound();
+        }
+
+        return NoContent();
     }
 }
